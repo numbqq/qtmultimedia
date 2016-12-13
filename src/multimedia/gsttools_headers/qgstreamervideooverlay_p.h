@@ -97,6 +97,8 @@ public:
     bool processSyncMessage(const QGstreamerMessage &message) override;
     bool processBusMessage(const QGstreamerMessage &message) override;
 
+    void changeSink(const QByteArray &elementName);
+
 Q_SIGNALS:
     void nativeVideoSizeChanged();
     void activeChanged();
