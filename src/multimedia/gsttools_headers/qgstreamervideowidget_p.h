@@ -79,6 +79,8 @@ public:
 
     void stopRenderer() override;
 
+	void setSink(const QString& element);
+
     Qt::AspectRatioMode aspectRatioMode() const override;
     void setAspectRatioMode(Qt::AspectRatioMode mode) override;
 
