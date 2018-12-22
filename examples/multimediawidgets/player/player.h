@@ -87,7 +87,7 @@ public:
     void addToPlaylist(const QList<QUrl> urls);
 
 signals:
-    void fullScreenChanged(bool fullScreen);
+	void maximizeChanged(bool max);
 
 private slots:
     void play();
@@ -112,6 +112,8 @@ private slots:
 	void sinkChange();
 
     void showColorDialog();
+
+	void setMaximized(bool maximize);
 
 private:
     void clearHistogram();
@@ -143,9 +145,9 @@ private:
     QString trackInfo;
     QString statusInfo;
     qint64 duration;
-	bool vdieo_hide;
-	int save_width;
-	int save_height;
+	bool vdieoHide;
+	QSize saveSize;
+	bool wasMaximized;
 };
 
 #endif // PLAYER_H

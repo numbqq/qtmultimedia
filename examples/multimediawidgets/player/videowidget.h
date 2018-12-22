@@ -60,6 +60,9 @@ class VideoWidget : public QVideoWidget
 public:
     VideoWidget(QWidget *parent = 0);
 
+signals:
+    void setMaximized(bool maximize);
+
 protected:
     void keyPressEvent(QKeyEvent *event) override;
     void mouseDoubleClickEvent(QMouseEvent *event) override;

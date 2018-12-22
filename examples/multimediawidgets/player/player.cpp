@@ -90,7 +90,8 @@ Player::Player(QWidget *parent)
     , coverLabel(0)
     , slider(0)
     , colorDialog(0)
-	, vdieo_hide(false)
+	, vdieoHide(false)
+    , wasMaximized(false)
 {
 //! [create-objs]
     player = new QMediaPlayer(this);
@@ -385,20 +386,24 @@ void Player::bufferingProgress(int progress)
 void Player::videoAvailableChanged(bool available)
 {
     if (!available) {
+		disconnect(videoWidget, SIGNAL(setMaximized(bool)),
+				        this, SLOT(setMaximized(bool)));
         disconnect(fullScreenButton, SIGNAL(clicked(bool)),
-                    videoWidget, SLOT(setFullScreen(bool)));
-        disconnect(videoWidget, SIGNAL(fullScreenChanged(bool)),
+				this, SLOT(setMaximized(bool)));
+		disconnect(this, SIGNAL(maximizeChanged(bool)),
                 fullScreenButton, SLOT(setChecked(bool)));
-        videoWidget->setFullScreen(false);
-    } else {
+   		setMaximized(false); 
+	} else {
+		connect(videoWidget, SIGNAL(setMaximized(bool))
+				        this, SLOT(setMaximized(bool)));
         connect(fullScreenButton, SIGNAL(clicked(bool)),
-                videoWidget, SLOT(setFullScreen(bool)));
-        connect(videoWidget, SIGNAL(fullScreenChanged(bool)),
+				this, SLOT(setMaximized(bool)));
+		connect(this, SIGNAL(maximizeChanged(bool)),
                 fullScreenButton, SLOT(setChecked(bool)));
 
         if (fullScreenButton->isChecked())
-            videoWidget->setFullScreen(true);
-    }
+    		setMaximized(true);
+	}
     colorButton->setEnabled(available);
 }
 
@@ -512,20 +517,41 @@ bool Player::eventFilter(QObject *obj, QEvent *event) {
          * player by set its size to zero
          */
         if (isMinimized()) {
-            vdieo_hide = true;
-            save_width = videoWidget->width();
-            save_height = videoWidget->height();
-            videoWidget->resize(0, 0);
-        } else if (vdieo_hide) {
-            vdieo_hide = false;
-            videoWidget->resize(save_width, save_height);
-        }
+            vdieoHide = true;
+			saveSize = QSize(videoWidget->width(), videoWidget->height());
+			videoWidget->resize(0, 0);
+        } else if (vdieoHide) {
+	    	vdieoHide = false;
+	    	videoWidget->resize(saveSize);
+		}
 
+		if (isMaximized()) {
+    		if (!wasMaximized) {
+    		    emit maximizeChanged(wasMaximized = true);
+
+        		playlistView->hide();
+    		}
+		} else {
+		    if (wasMaximized) {
+        		emit maximizeChanged(wasMaximized = false);
+
+		        playlistView->show();
+    		}
+		}
     } else {
         // qDebug() << "Event type:" << event->type();
     }
 
     return QWidget::eventFilter(obj, event);
+}
+
+void Player::setMaximized(bool maximize)
+{
+    if (maximize) {
+        showMaximized();
+    } else {
+        showNormal();
+    }
 }
 
 
