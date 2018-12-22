@@ -61,7 +61,7 @@ public:
     VideoWidget(QWidget *parent = 0);
 
 signals:
-    void setMaximized(bool maximize);
+	void setFullScreen(bool fullscreen);
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;

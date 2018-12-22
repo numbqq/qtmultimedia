@@ -180,7 +180,7 @@ Player::Player(QWidget *parent)
     fullScreenButton->setCheckable(true);
 
 	sinkButton = new QPushButton("EGL", this);
-	connect(sinkButton, SIGNAL(clicked()), this, SLOT(sinkChange()));
+	connect(sinkButton, SIGNAL(clicked()), this, SLOT(changeSink()));
 
     colorButton = new QPushButton(tr("Color Options..."), this);
     colorButton->setEnabled(false);
@@ -386,23 +386,23 @@ void Player::bufferingProgress(int progress)
 void Player::videoAvailableChanged(bool available)
 {
     if (!available) {
-		disconnect(videoWidget, SIGNAL(setMaximized(bool)),
-				        this, SLOT(setMaximized(bool)));
-        disconnect(fullScreenButton, SIGNAL(clicked(bool)),
-				this, SLOT(setMaximized(bool)));
-		disconnect(this, SIGNAL(maximizeChanged(bool)),
-                fullScreenButton, SLOT(setChecked(bool)));
-   		setMaximized(false); 
+        disconnect(videoWidget, SIGNAL(setFullScreen(bool)),
+				        this, SLOT(setFullScreen(bool)));
+		disconnect(fullScreenButton, SIGNAL(clicked(bool)),
+						this, SLOT(setFullScreen(bool)));
+        disconnect(this, SIGNAL(fullscreenChanged(bool)),
+				fullScreenButton, SLOT(setChecked(bool)));
+		setFullScreen(false);
 	} else {
-		connect(videoWidget, SIGNAL(setMaximized(bool))
-				        this, SLOT(setMaximized(bool)));
-        connect(fullScreenButton, SIGNAL(clicked(bool)),
-				this, SLOT(setMaximized(bool)));
-		connect(this, SIGNAL(maximizeChanged(bool)),
-                fullScreenButton, SLOT(setChecked(bool)));
+        connect(videoWidget, SIGNAL(setFullScreen(bool)),
+				        this, SLOT(setFullScreen(bool)));
+		connect(fullScreenButton, SIGNAL(clicked(bool)),
+						this, SLOT(setFullScreen(bool)));
+		connect(this, SIGNAL(fullscreenChanged(bool)),
+			fullScreenButton, SLOT(setChecked(bool)));
 
         if (fullScreenButton->isChecked())
-    		setMaximized(true);
+			setFullScreen(true);
 	}
     colorButton->setEnabled(available);
 }
@@ -496,7 +496,7 @@ void Player::play()
 }
 
 
-void Player::sinkChange()
+void Player::changeSink()
 {
     if ( player->state() == QMediaPlayer::StoppedState ) {
         if(sinkButton->text() == "DRM") {
@@ -524,31 +524,30 @@ bool Player::eventFilter(QObject *obj, QEvent *event) {
 	    	vdieoHide = false;
 	    	videoWidget->resize(saveSize);
 		}
-
-		if (isMaximized()) {
+		if (isFullScreen()) {
     		if (!wasMaximized) {
-    		    emit maximizeChanged(wasMaximized = true);
+				emit fullscreenChanged(wasMaximized = true);	
 
         		playlistView->hide();
     		}
 		} else {
 		    if (wasMaximized) {
-        		emit maximizeChanged(wasMaximized = false);
-
+				emit fullscreenChanged(wasMaximized = false);
 		        playlistView->show();
     		}
 		}
-    } else {
-        // qDebug() << "Event type:" << event->type();
-    }
+	} else if (event->type()==QEvent::KeyPress && isFullScreen()) {
+		   emit setFullScreen(false);
+		   event->accept();
+	}
 
     return QWidget::eventFilter(obj, event);
 }
 
-void Player::setMaximized(bool maximize)
+void Player::setFullScreen(bool fullscreen)
 {
-    if (maximize) {
-        showMaximized();
+	if (fullscreen) {
+	    showFullScreen();
     } else {
         showNormal();
     }
