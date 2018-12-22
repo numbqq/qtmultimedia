@@ -67,6 +67,7 @@ Player::Player(QWidget *parent)
     , coverLabel(0)
     , slider(0)
     , colorDialog(0)
+	, vdieo_hide(false)
 {
 //! [create-objs]
     player = new QMediaPlayer(this);
@@ -190,6 +191,8 @@ Player::Player(QWidget *parent)
         colorButton->setEnabled(false);
         fullScreenButton->setEnabled(false);
     }
+
+	this->installEventFilter(this);
 
     metaDataChanged();
 }
@@ -448,6 +451,30 @@ void Player::showColorDialog()
     }
     colorDialog->show();
 }
+
+bool Player::eventFilter(QObject *obj, QEvent *event) {
+    if (event->type() == QEvent::WindowStateChange) {
+
+        /* rkximagesink can not hide itself, so we should do it in
+         * player by set its size to zero
+         */
+        if (isMinimized()) {
+            vdieo_hide = true;
+            save_width = videoWidget->width();
+            save_height = videoWidget->height();
+            videoWidget->resize(0, 0);
+        } else if (vdieo_hide) {
+            vdieo_hide = false;
+            videoWidget->resize(save_width, save_height);
+        }
+
+    } else {
+        // qDebug() << "Event type:" << event->type();
+    }
+
+    return QWidget::eventFilter(obj, event);
+}
+
 
 void Player::clearHistogram()
 {
