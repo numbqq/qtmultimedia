@@ -68,6 +68,7 @@ class QPushButton;
 class QSlider;
 class QVideoProbe;
 class QVideoWidget;
+class QBoxLayout;
 class QAudioProbe;
 QT_END_NAMESPACE
 
@@ -147,6 +148,10 @@ private:
 	bool vdieoHide;
 	QSize saveSize;
 	bool wasMaximized;
+
+	QBoxLayout *controlLayout;
+	QBoxLayout *layout;
+
 };
 
 #endif // PLAYER_H

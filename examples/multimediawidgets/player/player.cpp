@@ -171,8 +171,8 @@ Player::Player(QWidget *parent)
     displayLayout->addWidget(videoWidget, 2);
     displayLayout->addWidget(playlistView);
 
-    QBoxLayout *controlLayout = new QHBoxLayout;
-    controlLayout->setMargin(0);
+    controlLayout = new QHBoxLayout;
+	controlLayout->setMargin(0);
     controlLayout->addWidget(openButton);
     controlLayout->addStretch(1);
     controlLayout->addWidget(controls);
@@ -181,13 +181,14 @@ Player::Player(QWidget *parent)
 	controlLayout->addWidget(sinkButton);
     controlLayout->addWidget(colorButton);
 
-    QBoxLayout *layout = new QVBoxLayout;
-    layout->addLayout(displayLayout);
+    layout = new QVBoxLayout;
+	layout->addLayout(displayLayout);
     QHBoxLayout *hLayout = new QHBoxLayout;
     hLayout->addWidget(slider);
     hLayout->addWidget(labelDuration);
     layout->addLayout(hLayout);
     layout->addLayout(controlLayout);
+	layout->setMargin(5);
 
     setLayout(layout);
 
@@ -509,11 +510,34 @@ bool Player::eventFilter(QObject *obj, QEvent *event) {
 				emit fullscreenChanged(wasMaximized = true);	
 
         		playlistView->hide();
+				slider->hide();
+				labelDuration->hide();
+
+				for (int i = 0; i != controlLayout->count(); ++i) {
+					  QWidget* w = controlLayout->itemAt(i)->widget();
+					    if (w != 0) {
+							    w->setVisible(false); // hides the widget
+								  }
+				}
+
+				layout->setMargin(0);
     		}
 		} else {
 		    if (wasMaximized) {
 				emit fullscreenChanged(wasMaximized = false);
 		        playlistView->show();
+				slider->show();
+				labelDuration->show();
+
+				for (int i = 0; i != controlLayout->count(); ++i) {
+					  QWidget* w = controlLayout->itemAt(i)->widget();
+					    if (w != 0) {
+							    w->setVisible(true); // show the widget
+								  }
+				}
+
+				layout->setMargin(5);
+
     		}
 		}
 	} else if (event->type()==QEvent::KeyPress && isFullScreen()) {
