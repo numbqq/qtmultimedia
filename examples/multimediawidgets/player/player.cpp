@@ -52,11 +52,9 @@
 
 #include "playercontrols.h"
 #include "playlistmodel.h"
-#include "histogramwidget.h"
 
 #include <QMediaService>
 #include <QMediaPlaylist>
-#include <QVideoProbe>
 #include <QAudioProbe>
 #include <QMediaMetaData>
 #include <QtWidgets>
@@ -133,23 +131,6 @@ Player::Player(QWidget *parent)
     labelDuration = new QLabel(this);
     connect(slider, SIGNAL(valueChanged(int)), this, SLOT(seek(int)));
 
-    labelHistogram = new QLabel(this);
-    labelHistogram->setText("Histogram:");
-    videoHistogram = new HistogramWidget(this);
-    audioHistogram = new HistogramWidget(this);
-    QHBoxLayout *histogramLayout = new QHBoxLayout;
-    histogramLayout->addWidget(labelHistogram);
-    histogramLayout->addWidget(videoHistogram, 1);
-    histogramLayout->addWidget(audioHistogram, 2);
-
-    videoProbe = new QVideoProbe(this);
-    connect(videoProbe, SIGNAL(videoFrameProbed(QVideoFrame)), videoHistogram, SLOT(processFrame(QVideoFrame)));
-    videoProbe->setSource(player);
-
-    audioProbe = new QAudioProbe(this);
-    connect(audioProbe, SIGNAL(audioBufferProbed(QAudioBuffer)), audioHistogram, SLOT(processBuffer(QAudioBuffer)));
-    audioProbe->setSource(player);
-
     QPushButton *openButton = new QPushButton(tr("Open"), this);
 
     connect(openButton, SIGNAL(clicked()), this, SLOT(open()));
@@ -207,7 +188,6 @@ Player::Player(QWidget *parent)
     hLayout->addWidget(labelDuration);
     layout->addLayout(hLayout);
     layout->addLayout(controlLayout);
-    layout->addLayout(histogramLayout);
 
     setLayout(layout);
 

@@ -100,13 +100,13 @@ PlayerControls::PlayerControls(QWidget *parent)
 
     connect(volumeSlider, SIGNAL(valueChanged(int)), this, SLOT(onVolumeSliderValueChanged()));
 
-    rateBox = new QComboBox(this);
-    rateBox->addItem("0.5x", QVariant(0.5));
-    rateBox->addItem("1.0x", QVariant(1.0));
-    rateBox->addItem("2.0x", QVariant(2.0));
-    rateBox->setCurrentIndex(1);
+//    rateBox = new QComboBox(this);
+//    rateBox->addItem("0.5x", QVariant(0.5));
+//    rateBox->addItem("1.0x", QVariant(1.0));
+//    rateBox->addItem("2.0x", QVariant(2.0));
+//    rateBox->setCurrentIndex(1);
 
-    connect(rateBox, SIGNAL(activated(int)), SLOT(updateRate()));
+//    connect(rateBox, SIGNAL(activated(int)), SLOT(updateRate()));
 
     QBoxLayout *layout = new QHBoxLayout;
     layout->setMargin(0);
@@ -116,7 +116,7 @@ PlayerControls::PlayerControls(QWidget *parent)
     layout->addWidget(nextButton);
     layout->addWidget(muteButton);
     layout->addWidget(volumeSlider);
-    layout->addWidget(rateBox);
+//    layout->addWidget(rateBox);
     setLayout(layout);
 }
 
