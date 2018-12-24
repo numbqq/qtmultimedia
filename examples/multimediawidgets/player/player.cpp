@@ -304,7 +304,7 @@ void Player::jump(const QModelIndex &index)
 
 void Player::playlistPositionChanged(int currentItem)
 {
-    clearHistogram();
+//    clearHistogram();
     playlistView->setCurrentIndex(playlistModel->index(currentItem, 0));
 }
 
@@ -343,8 +343,8 @@ void Player::statusChanged(QMediaPlayer::MediaStatus status)
 
 void Player::stateChanged(QMediaPlayer::State state)
 {
-    if (state == QMediaPlayer::StoppedState)
-        clearHistogram();
+//    if (state == QMediaPlayer::StoppedState)
+//        clearHistogram();
 }
 
 void Player::handleCursor(QMediaPlayer::MediaStatus status)
@@ -558,8 +558,8 @@ void Player::setFullScreen(bool fullscreen)
 }
 
 
-void Player::clearHistogram()
-{
-    QMetaObject::invokeMethod(videoHistogram, "processFrame", Qt::QueuedConnection, Q_ARG(QVideoFrame, QVideoFrame()));
-    QMetaObject::invokeMethod(audioHistogram, "processBuffer", Qt::QueuedConnection, Q_ARG(QAudioBuffer, QAudioBuffer()));
-}
+//void Player::clearHistogram()
+//{
+//    QMetaObject::invokeMethod(videoHistogram, "processFrame", Qt::QueuedConnection, Q_ARG(QVideoFrame, QVideoFrame()));
+//    QMetaObject::invokeMethod(audioHistogram, "processBuffer", Qt::QueuedConnection, Q_ARG(QAudioBuffer, QAudioBuffer()));
+//}

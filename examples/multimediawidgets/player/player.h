@@ -116,7 +116,7 @@ private slots:
 
 	void setFullScreen(bool fullscreen);
 private:
-    void clearHistogram();
+//    void clearHistogram();
     void setTrackInfo(const QString &info);
     void setStatusInfo(const QString &info);
     void handleCursor(QMediaPlayer::MediaStatus status);
